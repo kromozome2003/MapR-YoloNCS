@@ -1,5 +1,5 @@
-﻿# Fork of https://github.com/gudovskiy/yoloNCS
-YOLO for Intel/Movidius Neural Compute Stick (NCS) demo in MapR environment
+# Fork of https://github.com/gudovskiy/yoloNCS
+## YOLO for Intel/Movidius Neural Compute Stick (NCS) demo in MapR environment
 Run yolo with NCS stick within VirtualBox and stream detected objects to MapR stream
 
 ## VirtualBox setup
@@ -16,14 +16,10 @@ VB extension pack : https://download.virtualbox.org/virtualbox/5.2.8/Oracle_VM_V
   Network : 1 x NAT + 1 x Host-only
   USB ports setup : Ports : USB 3.0 xHCI
   ![](/images/vb-ports-usb.png)
-
-    1st filter : USB2 Movidius 03e7 (vendor ID 03e7)
-
-    ![](/images/vb-ports-usb-filter-03e7.png)
-
-    2nd filter : USB3 Movidius 040e (vendor ID 040e)
-
-    ![](/images/vb-ports-usb-filter-040e.png)
+  1st filter : USB2 Movidius 03e7 (vendor ID 03e7)
+  ![](/images/vb-ports-usb-filter-03e7.png)
+  2nd filter : USB3 Movidius 040e (vendor ID 040e)
+  ![](/images/vb-ports-usb-filter-040e.png)
 
 ## After installing Ubuntu
   root@mapr:~# sudo su -
