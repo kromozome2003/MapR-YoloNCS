@@ -1,0 +1,6 @@
+# ignore graph
+**/graph
+**/weights
+**.DS_Store
+**.idea
+**__pycache__
