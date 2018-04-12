@@ -1,11 +1,11 @@
 ﻿# Fork of https://github.com/gudovskiy/yoloNCS
-YOLO for Intel/Movidius Neural Compute Stick (NCS) demo in MapR environment
+##YOLO for Intel/Movidius Neural Compute Stick (NCS) demo in MapR environment
 Run yolo with NCS stick within VirtualBox and stream detected objects to MapR stream
 
 ## VirtualBox setup
-Ubuntu 16.04 TLS Desktop : https://www.ubuntu.com/download/desktop/thank-you?country=FR&version=16.04.4&architecture=amd64
-VirtualBox 5.2.6 for Mac : https://download.virtualbox.org/virtualbox/5.2.8/VirtualBox-5.2.8-121009-OSX.dmg
-VB extension pack : https://download.virtualbox.org/virtualbox/5.2.8/Oracle_VM_VirtualBox_Extension_Pack-5.2.8.vbox-extpack
+* Ubuntu 16.04 TLS Desktop : https://www.ubuntu.com/download/desktop/thank-you?country=FR&version=16.04.4&architecture=amd64
+* VirtualBox 5.2.6 for Mac : https://download.virtualbox.org/virtualbox/5.2.8/VirtualBox-5.2.8-121009-OSX.dmg
+* VB extension pack : https://download.virtualbox.org/virtualbox/5.2.8/Oracle_VM_VirtualBox_Extension_Pack-5.2.8.vbox-extpack
 
 ## VM specs
   Ubuntu 64 bits
@@ -15,15 +15,11 @@ VB extension pack : https://download.virtualbox.org/virtualbox/5.2.8/Oracle_VM_V
   Audio disabled
   Network : 1 x NAT + 1 x Host-only
   USB ports setup : Ports : USB 3.0 xHCI
-  ![](/images/vb-ports-usb.png)
-
-    1st filter : USB2 Movidius 03e7 (vendor ID 03e7)
-
-    ![](/images/vb-ports-usb-filter-03e7.png)
-
-    2nd filter : USB3 Movidius 040e (vendor ID 040e)
-
-    ![](/images/vb-ports-usb-filter-040e.png)
+  ![](/images/vb-ports-usb.png | width=100)
+  1st filter : USB2 Movidius 03e7 (vendor ID 03e7)
+  ![](/images/vb-ports-usb-filter-03e7.png | width=100)
+  2nd filter : USB3 Movidius 040e (vendor ID 040e)
+  ![](/images/vb-ports-usb-filter-040e.png | width=100)
 
 ## After installing Ubuntu
   root@mapr:~# sudo su -
@@ -40,7 +36,7 @@ VB extension pack : https://download.virtualbox.org/virtualbox/5.2.8/Oracle_VM_V
   root@mapr:~/workspace/MapR-YoloNCS# lsusb | grep -i 03e7
   root@mapr:~/workspace/ncsdk# usb-devices | grep -i 03e7
 
-  ![](/images/troubleshoot-usb.png)
+  ![](/images/troubleshoot-usb.png | width=100)
 
 ## Compilation
 * From your VM : Compile .prototxt and corresponding .caffemodel (with the same name) to get NCS graph file.
@@ -58,29 +54,29 @@ VB extension pack : https://download.virtualbox.org/virtualbox/5.2.8/Oracle_VM_V
   root@mapr:~/workspace/MapR-YoloNCS# mvNCCompile prototxt/yolo_tiny_deploy.prototxt -w weights/yolo_tiny.caffemodel -s 12
   root@mapr:~/workspace/MapR-YoloNCS# ls -l ~/workspace/MapR-YoloNCS/graph
 
-  ![](/images/compile-model.png)
+  ![](/images/compile-model.png | width=100)
 
 ## Single Image Script
 * Run "yolo_example.py" to process a single image.
 * For example: "python3 py_examples/yolo_example.py images/dog.jpg" to get detections as below.
 
-![](/images/yolo_dog.png)
+![](/images/yolo_dog.png | width=100)
 
 ## Try with your webcam (live detection)
 * Add your webcam to VirtualBox : Devices->Webcams->Facetime HD Camera
 
-![](/images/webcam-vb.png)
+![](/images/webcam-vb.png | width=100)
 
 * Run "object_detection_app.py" to process a videos from your camera.
 * For example: "python3 py_examples/object_detection_app.py" to get camera detections as below.
 * Modify script arguments if needed.
 * Press "q" to exit app.
 
-![](/images/camera.png)
+![](/images/camera.png | width=100)
 
 ## Sending detected objects to Kafka stream on MapR platform
 * python3 py_examples/object_detection_app.py -g http://<USER>:<PASS>@<IP_ADDR>:8082/topics/ -s <STREAM_PATH> -t <TOPIC>
 * Modify script arguments axxording to your MapR environment.
 * Press "q" to exit app.
 
-![](/images/mapr-stream-consumer.png)
+![](/images/mapr-stream-consumer.png | width=100)
