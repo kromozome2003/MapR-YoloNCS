@@ -15,11 +15,11 @@ Run yolo with NCS stick within VirtualBox and stream detected objects to MapR st
   Audio disabled
   Network : 1 x NAT + 1 x Host-only
   USB ports setup : Ports : USB 3.0 xHCI
-  ![](/images/vb-ports-usb.png | width=100)
+    ![](/images/vb-ports-usb.png | width=80)
   1st filter : USB2 Movidius 03e7 (vendor ID 03e7)
-  ![](/images/vb-ports-usb-filter-03e7.png | width=100)
+    ![](/images/vb-ports-usb-filter-03e7.png | width=80)
   2nd filter : USB3 Movidius 040e (vendor ID 040e)
-  ![](/images/vb-ports-usb-filter-040e.png | width=100)
+    ![](/images/vb-ports-usb-filter-040e.png | width=80)
 
 ## After installing Ubuntu
   root@mapr:~# sudo su -
@@ -36,7 +36,7 @@ Run yolo with NCS stick within VirtualBox and stream detected objects to MapR st
   root@mapr:~/workspace/MapR-YoloNCS# lsusb | grep -i 03e7
   root@mapr:~/workspace/ncsdk# usb-devices | grep -i 03e7
 
-  ![](/images/troubleshoot-usb.png | width=100)
+    ![](/images/troubleshoot-usb.png | width=80)
 
 ## Compilation
 * From your VM : Compile .prototxt and corresponding .caffemodel (with the same name) to get NCS graph file.
@@ -54,29 +54,29 @@ Run yolo with NCS stick within VirtualBox and stream detected objects to MapR st
   root@mapr:~/workspace/MapR-YoloNCS# mvNCCompile prototxt/yolo_tiny_deploy.prototxt -w weights/yolo_tiny.caffemodel -s 12
   root@mapr:~/workspace/MapR-YoloNCS# ls -l ~/workspace/MapR-YoloNCS/graph
 
-  ![](/images/compile-model.png | width=100)
+  ![](/images/compile-model.png | width=80)
 
 ## Single Image Script
 * Run "yolo_example.py" to process a single image.
 * For example: "python3 py_examples/yolo_example.py images/dog.jpg" to get detections as below.
 
-![](/images/yolo_dog.png | width=100)
+  ![](/images/yolo_dog.png | width=80)
 
 ## Try with your webcam (live detection)
 * Add your webcam to VirtualBox : Devices->Webcams->Facetime HD Camera
 
-![](/images/webcam-vb.png | width=100)
+  ![](/images/webcam-vb.png | width=80)
 
 * Run "object_detection_app.py" to process a videos from your camera.
 * For example: "python3 py_examples/object_detection_app.py" to get camera detections as below.
 * Modify script arguments if needed.
 * Press "q" to exit app.
 
-![](/images/camera.png | width=100)
+![](/images/camera.png | width=80)
 
 ## Sending detected objects to Kafka stream on MapR platform
 * python3 py_examples/object_detection_app.py -g http://<USER>:<PASS>@<IP_ADDR>:8082/topics/ -s <STREAM_PATH> -t <TOPIC>
 * Modify script arguments axxording to your MapR environment.
 * Press "q" to exit app.
 
-![](/images/mapr-stream-consumer.png | width=100)
+![](/images/mapr-stream-consumer.png | width=80)
