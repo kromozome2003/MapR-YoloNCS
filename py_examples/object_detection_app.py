@@ -59,12 +59,18 @@ def show_results(img, results, img_width, img_height):
         if ymax>img_height:
         	ymax = img_height
         if  imshow:
-        	cv2.rectangle(img_cp,(xmin,ymin),(xmax,ymax),(0,255,0),2)
+        	cv2.rectangle(img_cp,(xmin,ymin),(xmax,ymax),(0,0,255),2)
         	#print ((xmin, ymin, xmax, ymax))
-        	cv2.rectangle(img_cp,(xmin,ymin-20),(xmax,ymin),(125,125,125),-1)
-        	cv2.putText(img_cp,results[i][0] + ' : %.2f' % results[i][5],(xmin+5,ymin-7),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0,0,0),1)
-    #
-    cv2.imshow('YOLO detection',img_cp)
+        	cv2.rectangle(img_cp,(xmin,ymin-20),(xmax,ymin),(0,0,0),-1)
+        	cv2.putText(img_cp,'MapR - ' + results[i][0] + ' : %.2f' % results[i][5],(xmin+5,ymin-7),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0,0,255),1)
+    #if at least 1 object detected
+    if len(results)>0 and capture_img:
+        #print (results)
+        img_filename = os.path.join(str(args.capture_path), str(t) + '.jpg')
+        print('saving capture to : ' + img_filename)
+        cv2.imwrite(img_filename,img_cp,[int(cv2.IMWRITE_JPEG_QUALITY), 90])
+    #Display video
+    cv2.imshow('MapR YOLO detection & Stream',img_cp)
 
 
 def interpret_output(output, img_width, img_height):
@@ -155,11 +161,17 @@ if __name__ == '__main__':
                         default=2, help='Number of workers.')
     parser.add_argument('-q-size', '--queue-size', dest='queue_size', type=int,
                         default=5, help='Size of the queue.')
+    parser.add_argument('-c', '--capture-image', dest='capture_path', type=str, help='Path where to store captures, ie. /tmp')
     group = parser.add_argument_group('stream')
     group.add_argument('-g', '--kafka-rest-gw', dest='kakfa_rest_gateway', type=str, default='', help='URL of Kafka REST gateway.')
     group.add_argument('-s', '--kafka-stream', dest='kakfa_stream', type=str, default='', help='Kafka stream name.')
     group.add_argument('-t', '--kafka-topic', dest='kakfa_topic', type=str, default='', help='Kafka topic.')
     args = parser.parse_args()
+
+    capture_img = False
+    if args.capture_path:
+        capture_img = True
+        print ('Saving img to : ' + str(args.capture_path))
 
     stream_args = False
     if args.kakfa_rest_gateway and args.kakfa_stream and args.kakfa_topic:
