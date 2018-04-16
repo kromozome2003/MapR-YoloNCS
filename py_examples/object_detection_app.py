@@ -1,6 +1,6 @@
 import os,time,cv2,argparse,multiprocessing
 import numpy as np
-import requests,json,time
+import requests,json,time,csv
 from requests.utils import quote
 from mvnc import mvncapi as mvnc
 from skimage.transform import resize
@@ -43,8 +43,13 @@ def show_results(img, results, img_width, img_height):
         w = int(results[i][3])//2
         h = int(results[i][4])//2
         confidence = str(results[i][5])
+        # Streaming is ON
         if stream_args:
             stream(str(x),str(y),str(w),str(h),str(type),str(confidence))
+        # CSV is ON
+        if csv_output:
+            save_to_csv(str(x),str(y),str(w),str(h),str(type),str(confidence))
+
         if disp_console : print ('    class : ' + results[i][0] + ' , [x,y,w,h]=[' + str(x) + ',' + str(y) + ',' + str(int(results[i][3])) + ',' + str(int(results[i][4]))+'], Confidence = ' + str(results[i][5]) )
         xmin = x-w
         xmax = x+w
@@ -64,14 +69,22 @@ def show_results(img, results, img_width, img_height):
         	cv2.rectangle(img_cp,(xmin,ymin-20),(xmax,ymin),(0,0,0),-1)
         	cv2.putText(img_cp,'MapR - ' + results[i][0] + ' : %.2f' % results[i][5],(xmin+5,ymin-7),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0,0,255),1)
     #if at least 1 object detected
-    if len(results)>0 and capture_img:
-        #print (results)
-        img_filename = os.path.join(str(args.capture_path), str(t) + '.jpg')
-        print('saving capture to : ' + img_filename)
-        cv2.imwrite(img_filename,img_cp,[int(cv2.IMWRITE_JPEG_QUALITY), 90])
+    if len(results)>0:
+        # Capture image that contains objects to file
+        if capture_img:
+            save_img_to_file(img_cp)
     #Display video
     cv2.imshow('MapR YOLO detection & Stream',img_cp)
 
+def save_img_to_file(imgage):
+    img_filename = os.path.join(str(args.capture_path), str(t) + '.jpg')
+    print('saving capture to : ' + img_filename)
+    cv2.imwrite(img_filename,imgage,[int(cv2.IMWRITE_JPEG_QUALITY), 90])
+
+def save_to_csv(x,y,w,h,type,confidence):
+    resultscsv = csv.writer(open(args.csv_file, 'a+'))
+    print('append CSV with : ' + str(t) + ',' + x + ',' + y + ',' + w + ',' + h + ',' + type + ',' + confidence )
+    resultscsv.writerow([str(t), x, y, w, h, type, confidence])
 
 def interpret_output(output, img_width, img_height):
     w_img = img_width
@@ -162,6 +175,7 @@ if __name__ == '__main__':
     parser.add_argument('-q-size', '--queue-size', dest='queue_size', type=int,
                         default=5, help='Size of the queue.')
     parser.add_argument('-c', '--capture-image', dest='capture_path', type=str, help='Path where to store captures, ie. /tmp')
+    parser.add_argument('-csv', '--csv-output-file', dest='csv_file', type=str, help='Path where to store CSV, ie. /tmp/output.csv')
     group = parser.add_argument_group('stream')
     group.add_argument('-g', '--kafka-rest-gw', dest='kakfa_rest_gateway', type=str, default='', help='URL of Kafka REST gateway.')
     group.add_argument('-s', '--kafka-stream', dest='kakfa_stream', type=str, default='', help='Kafka stream name.')
@@ -172,6 +186,11 @@ if __name__ == '__main__':
     if args.capture_path:
         capture_img = True
         print ('Saving img to : ' + str(args.capture_path))
+
+    csv_output = False
+    if args.csv_file:
+        csv_output = True
+        print ('Saving CSV to : ' + str(args.csv_file))
 
     stream_args = False
     if args.kakfa_rest_gateway and args.kakfa_stream and args.kakfa_topic:
